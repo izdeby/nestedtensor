@@ -105,3 +105,6 @@ a = torch.tensor([1, 2])
 b = torch.tensor([7, 8])
 print(simple_fn(a, b))
 ```
+
+## Contribution
+The project is in an active development. If you have a suggestions or have found an issue, please file an issue!
