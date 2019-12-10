@@ -1,27 +1,33 @@
+PLEASE NOTE, NESTEDTENSORS ARE IN AN ACTIVE DEVELOPMENT AND EVERYTHING HERE IS A SUBJECT TO CHANGE.
+
 ## Motivation
 
-Many fields manipulate collections of Tensors of different shapes. For example, paragraphs of text, images of different sizes or audio files of different lengths. We don't have a first class abstraction that enables the concurrent manipulation of collections of this type of data. We further often need to batch arbitrary data and operations for efficiency.
+Many fields manipulate collections of Tensors of different shapes. For example, paragraphs of text, images of different sizes or audio files of different lengths. We don't have a first class abstrageneralizationction that enables the concurrent manipulation of collections of this type of data. We further often need to batch arbitrary data and operations for efficiency.
 
 ## Decription
 
-NestedTensor is an abstraction of torch tensor which allows working with data of different sizes and length. 
+NestedTensor is an generalization of torch tensor which allows working with data of different sizes and length. 
+In general, there are two cases for which NestedTensors provide computational representations: list of tensors and lists of nestedtensors.
 
-In general, there are two cases for which NestedTensors provide computational representations.
 
-**Lists of Tensors**
-Each Tensor constituent of the list it represents, if any, must be of its dtype, layout and device. The dimension of a constituent Tensor must be one less than the dimension of the NestedTensor. An empty list of Tensors yields a NestedTensor of dimension one.
 
 **Lists of NestedTensors**
-Each constituent NestedTensor must be of its dtype, layout and device. The dimension of a constituent NestedTensor must be one less than the dimension of the NestedTensor.
+
+
+## Constraints
+ - Each Tensor constituent of the list it represents, if any, must be of its dtype, layout and device. 
+ - The dimension of a constituent Tensor must be one less than the dimension of the NestedTensor. 
+ - An empty list of Tensors yields a NestedTensor of dimension one. 
+ - Each constituent NestedTensor must be of its dtype, layout and device. 
+ - The dimension of a constituent NestedTensor must be one less than the dimension of the NestedTensor.
 
 ## Prerequisites
 
 You will need this packages to be installed:
-
-- ipython
-- notebook
 - pytorch
 - torchvision
+- ipython (needed for examples)
+- notebook (needed for examples)
 
 If you have conda installed on your machine, you can install these via
 ```
@@ -90,6 +96,12 @@ Decorating the function as tensorwise does not affect its behavior with respect 
 
 ```
 @tensorwise()
-def sum_plus_one(t1, t2):
+@tensorwise()
+def simple_fn(t1, t2):
     return t1 + 1 + t2
+
+
+a = torch.tensor([1, 2])
+b = torch.tensor([7, 8])
+print(simple_fn(a, b))
 ```
