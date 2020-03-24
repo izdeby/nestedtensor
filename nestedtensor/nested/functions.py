@@ -276,10 +276,7 @@ def lstm_forward(self, input, hx=None):
     hidden1 = torch.cat([h[1] for (o, h) in result], dim=1)
     return output, (hidden0, hidden1)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> segNT
 def _set_size(nested_size, dim, size):
     if isinstance(nested_size, torch.Size):
         result = list(nested_size)
