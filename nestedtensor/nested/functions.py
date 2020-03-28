@@ -164,36 +164,6 @@ def batch_norm(input, running_mean, running_var, weight=None, bias=None, trainin
         res.append(tensor.squeeze(0))
 
     return nestedtensor.nested_tensor(res)
-    
-
-def relu(input, inplace=False):
-    validate_nt(input)
-
-    res = []
-    for tensor in iter(input):
-        if tensor.dim() != 3:
-            raise RuntimeError("Expected tensors of dimension 3, got: {}".format(tensor.dim()))
-
-        tensor = tensor.unsqueeze(0)
-        tensor = torch.nn.functional.relu(tensor, inplace)
-        res.append(tensor.squeeze(0))
-
-    return nestedtensor.nested_tensor(res)
-
-
-def dropout(input, p=0.5, training=True, inplace=False):
-    validate_nt(input)
-
-    res = []
-    for tensor in iter(input):
-        if tensor.dim() != 3:
-            raise RuntimeError("Expected tensors of dimension 3, got: {}".format(tensor.dim()))
-
-        tensor = tensor.unsqueeze(0)
-        tensor = torch.nn.functional.dropout(tensor, p, training, inplace)
-        res.append(tensor.squeeze(0))
-
-    return nestedtensor.nested_tensor(res)
 
 
 def cross_entropy(input, target, weight=None, size_average=None, ignore_index=-100, reduce=None, reduction='mean'):

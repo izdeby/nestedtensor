@@ -207,6 +207,16 @@ class NestedTensor(object):
     def __torch_function__(self, func, types, args=(), kwargs=None):
         _local_func = None
         if func in NestedTensor.__C_functions:
+            if 'dropout' in str(func) or 'dropout_' in str(func):
+                return NestedTensor(getattr(nestedtensor._C, NestedTensor.__C_functions[func])(args[0]._impl, 
+                                                                                               kwargs['p'],
+                                                                                               kwargs['training'],
+                                                                                               kwargs['inplace']))
+
+            if 'relu' in str(func):
+                return NestedTensor(getattr(nestedtensor._C, NestedTensor.__C_functions[func])(args[0]._impl, kwargs['inplace']))
+
+
             assert len(args) == 1
             if kwargs is None:
                 return NestedTensor(getattr(nestedtensor._C, NestedTensor.__C_functions[func])(args[0]._impl))

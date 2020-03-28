@@ -11,7 +11,8 @@ from collections import namedtuple
 def get_nn_C_functions():
     return [
         "relu",
-        "relu_"
+        "relu_",
+        "dropout",
     ]
 
 def get_unary_C_functions():

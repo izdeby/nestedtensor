@@ -108,7 +108,9 @@ def monkey_patch(NestedTensor):
                 function_name + "_",
                 _gen_fn(function_name + "_"))
         C_functions[getattr(torch, function_name)] = function_name
-
+    # <
+    
+    # > NN functions supported by _C
     for function_name in codegen.get_nn_C_functions():
         setattr(NestedTensor,
                 function_name,
@@ -242,11 +244,9 @@ def monkey_patch(NestedTensor):
     set_function(torch.nn.functional.max_pool2d, functions.max_pool2d)
     set_function(torch.embedding_bag, functions.embedding_bag)
     set_function(torch.nn.functional.batch_norm, functions.batch_norm)
-    #set_function(torch.nn.functional.relu, functions.relu)
     set_function(torch.nn.functional.interpolate, functions.interpolate)
     set_function(torch.nn.functional.cross_entropy, functions.cross_entropy)
-    set_function(torch.nn.functional.dropout, functions.dropout)
-    
+
     # module.nn.functional.linear = functions.linear
     # module.nn.functional.interpolate = functions.interpolate
     # # module.nn.functional.nll_loss = functions.nll_loss

@@ -2,6 +2,7 @@
 #include <jit_list_apply.h>
 #include <torch/extension.h>
 #include <unary.h>
+#include <seg_layers.h>
 #include <utils/nested_node_functions.h>
 #include <utils/python_nested_node.h>
 
@@ -86,6 +87,8 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
       .def("__repr__", &THPNestedTensor::str);
 
   add_unary_functions(m, c);
+  add_relu(m, c, "relu");
+  add_dropout(m, c, "dropout");
 
   // NOTE: This is a private function until it is feature complete
   m.def("_jit_tensorwise", &torch::nested_tensor::jit_tensorwise);
