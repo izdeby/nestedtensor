@@ -32,11 +32,11 @@ NestedTensor max_pool2d(NestedTensor input,
                         at::IntArrayRef dilation,
                         bool ceil_mode);
 
-NestedTensor batch_norm(NestedTensor input,
-                        const at::Tensor running_mean,
-                        const at::Tensor running_var,
-                        c10::optional<at::Tensor> weight,
-                        c10::optional<at::Tensor> bias,
+NestedTensor batch_norm(NestedTensor& input,
+                        const at::Tensor& running_mean,
+                        const at::Tensor& running_var,
+                        c10::optional<at::Tensor>& weight,
+                        c10::optional<at::Tensor>& bias,
                         bool training, 
                         double momentum,
                         double eps);

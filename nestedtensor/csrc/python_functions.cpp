@@ -3,6 +3,8 @@
 #include <nestedtensor/csrc/python_functions.h>
 #include <pybind11/stl.h>
 #include <torch/extension.h>
+#include <chrono>
+typedef std::chrono::high_resolution_clock Clock;
 
 using namespace torch::nn;
 namespace F = torch::nn::functional;
@@ -143,14 +145,24 @@ void add_functions(
            bool training, 
            double momentum,
            double eps){
-             return THPNestedTensor(batch_norm(input.data().contiguous(), 
+
+             auto start = Clock::now();
+             auto bstart = Clock::now();
+             auto bres = batch_norm(input.data(), 
                                                running_mean, 
                                                running_var, 
                                                weight, 
                                                bias, 
                                                training, 
                                                momentum,
-                                               eps));
+                                               eps);
+             auto bend = Clock::now();
+             std::cout << "level10_b: " << std::chrono::duration_cast<std::chrono::microseconds>(bend - bstart).count() << std::endl;
+             auto res = THPNestedTensor(std::move(bres));
+
+             auto end = Clock::now();
+             std::cout << "level10: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << std::endl;
+             return res;
         },
         py::arg("input"),
         py::arg("running_mean"),

@@ -11,6 +11,7 @@ from . import creation
 
 import nestedtensor
 import itertools
+import time
 
 # Set this flag to true, if you want to enable additional verifications.
 DEBUG = int(os.getenv("DEBUG", 1))
@@ -217,7 +218,11 @@ class NestedTensor(object):
         if kwargs is None:
             kwargs = {}
         if func in NestedTensor.__function_dispatch:
-            return NestedTensor.__function_dispatch[func](*args, **kwargs)
+            print("here")
+            t = time.time()
+            res =  NestedTensor.__function_dispatch[func](*args, **kwargs)
+            print("level11: ", time.time() - t)
+            return res
         impl_args = [a._impl if isinstance(a, NestedTensor) else a for a in args]
         impl_kwargs = {
             k: v._impl if isinstance(v, NestedTensor) else v

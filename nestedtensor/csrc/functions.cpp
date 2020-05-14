@@ -1,6 +1,8 @@
 #include <nestedtensor/csrc/functions.h>
 #include <nestedtensor/csrc/utils/nested_node_functions.h>
 #include <torch/extension.h>
+#include <chrono>
+typedef std::chrono::high_resolution_clock Clock;
 
 using namespace torch::nn;
 namespace F = torch::nn::functional;
@@ -135,14 +137,16 @@ NestedTensor max_pool2d(NestedTensor input,
   return NestedTensor(std::move(res));
 }
 
-NestedTensor batch_norm(NestedTensor input,
-                        const at::Tensor running_mean,
-                        const at::Tensor running_var,
-                        c10::optional<at::Tensor> weight,
-                        c10::optional<at::Tensor> bias,
+NestedTensor batch_norm(NestedTensor& input,
+                        const at::Tensor& running_mean,
+                        const at::Tensor& running_var,
+                        c10::optional<at::Tensor>& weight,
+                        c10::optional<at::Tensor>& bias,
                         bool training, 
                         double momentum,
                         double eps) {
+    auto t_total = Clock::now();
+
     TensorNode structure = input.get_structure();
     
     auto options = F::BatchNormFuncOptions().momentum(momentum)
@@ -157,10 +161,15 @@ NestedTensor batch_norm(NestedTensor input,
         options = options.bias(bias.value());
     }
 
-    TensorNode res = map([&, options](at::Tensor t){
-        return F::batch_norm(t.unsqueeze(0), running_mean, running_var, options).squeeze(0);
-    }, structure);
 
+    auto t_map = Clock::now();
+    TensorNode res = map([&, options](at::Tensor t){
+      return F::batch_norm(t.unsqueeze(0), running_mean, running_var, options).squeeze(0);
+    }, structure);
+    
+    auto t_end = Clock::now();
+    std::cout << "Batch_map: " << std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_map).count() << std::endl;
+    std::cout << "Batch_total: " << std::chrono::duration_cast<std::chrono::microseconds>(t_end - t_total).count() << std::endl;
     return NestedTensor(std::move(res));
 }
 
