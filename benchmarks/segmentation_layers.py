@@ -309,7 +309,41 @@ class SegLayersBenchMark(object):
             # generate inputs before iterating layers to have the same imput per layer
             self.inputs, self.targets = self.get_input(cuda, n, c, h, w, h_var, w_var, seed)
 
+            self.args.layers = [
+                "relu__tensor_pad",
+                "relu__tensor_iter",
+                "relu__nt",
+                "relu_tensor_iter",
+                "relu_tensor_pad",
+                "relu_nt",
+                "conv2d_iter_1x1",
+                "conv2d_pad_1x1",
+                "conv2d_nt_1x1",
+                "conv2d_iter_3x3",
+                "conv2d_pad_3x3",
+                "conv2d_nt_3x3",
+                "conv2d_iter_7x7",
+                "conv2d_pad_7x7",
+                "conv2d_nt_7x7",
+                "batch_norm_tensor_iter",
+                "batch_norm_tensor_pad",
+                "batch_norm_nt",
+                "max_pool2d_tensor_iter",
+                "max_pool2d_tensor_pad",
+                "max_pool2d_nt",
+                "cross_entropy_tensor_iter",
+                "cross_entropy_tensor_pad",
+                "cross_entropy_nt",
+                "dropout_tensor_iter",
+                "dropout_tensor_pad",
+                "dropout_nt",
+                "interpolate_tensor_iter",
+                "interpolate_tensor_pad",
+                "interpolate_nt",
+            ]
+
             benchmarks = [(layer, self.get_benchmark(c, layer, cuda)) for layer in self.args.layers]
+            
             for layer, benchmark in benchmarks:
                 result = utils.benchmark_fn(benchmark, run_time=self.args.run_time, warmup=self.args.warmup, cuda=cuda)
                 result["#"] = str(i) + "/" + str(len(benchmarks) * len(params))
