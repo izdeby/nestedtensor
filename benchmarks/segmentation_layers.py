@@ -21,8 +21,11 @@ def register_benchmark(fn):
 @register_benchmark
 def relu__tensor_iter(self):
     def _relu_tensor_iter():
+        res = []
         for t in self.inputs:
-            torch.nn.functional.relu_(t)
+            r = torch.nn.functional.relu_(t)
+            res.append(r)
+        return res
 
     return _relu_tensor_iter
 
@@ -47,9 +50,11 @@ def relu__nt(self):
 @register_benchmark
 def relu_tensor_iter(self):
     def _relu_tensor_iter():
+        res = []
         for t in self.inputs:
-            torch.nn.functional.relu(t)
-
+            r = torch.nn.functional.relu(t)
+            res.append(r)
+        return res
     return _relu_tensor_iter
 
 @register_benchmark
@@ -76,9 +81,11 @@ def relu_nt(self):
 @register_benchmark
 def conv2d_iter(self, module):
     def _conv2d_tensor_iter():
+        res = []
         for t in self.inputs:
-            module(t.unsqueeze(0)).squeeze(0)
-
+            r = module(t.unsqueeze(0)).squeeze(0)
+            res.append(r)
+        return res
     return _conv2d_tensor_iter
 
 @register_benchmark
@@ -105,9 +112,11 @@ def conv2d_nt(self, module):
 @register_benchmark
 def batch_norm_tensor_iter(self, module):
     def _batch_norm_tensor_iter():
+        res = []
         for t in self.inputs:
-            module(t.unsqueeze(0)).squeeze(0)
-
+            r = module(t.unsqueeze(0)).squeeze(0)
+            res.append(r)
+        return res
     return _batch_norm_tensor_iter
 
 @register_benchmark
@@ -134,9 +143,11 @@ def batch_norm_nt(self, module):
 @register_benchmark
 def max_pool2d_tensor_iter(self, module):
     def _max_pool2d_tensor_iter():
+        res = []
         for t in self.inputs:
-            module(t.unsqueeze(0)).squeeze(0)
-
+            r = module(t.unsqueeze(0)).squeeze(0)
+            res.append(r)
+        return res
     return _max_pool2d_tensor_iter
 
 @register_benchmark
@@ -163,11 +174,13 @@ def max_pool2d_nt(self, module):
 @register_benchmark
 def cross_entropy_tensor_iter(self):
     def _cross_entropy_tensor_iter():
+        res = []
         for a, b in zip(self.inputs, self.targets):
-            torch.nn.functional.cross_entropy(
+            r = torch.nn.functional.cross_entropy(
                 a.unsqueeze(0), b.unsqueeze(0)
             ).squeeze(0)
-
+            res.append(r)
+        return res
     return _cross_entropy_tensor_iter
 
 @register_benchmark
@@ -196,9 +209,11 @@ def cross_entropy_nt(self):
 @register_benchmark
 def dropout_tensor_iter(self):
     def _dropout_tensor_iter():
+        res = []
         for t in self.inputs:
-            torch.nn.functional.dropout(t.unsqueeze(0)).squeeze(0)
-
+            r = torch.nn.functional.dropout(t.unsqueeze(0)).squeeze(0)
+            res.append(r)
+        return res
     return _dropout_tensor_iter
 
 @register_benchmark
@@ -225,9 +240,12 @@ def dropout_nt(self):
 @register_benchmark
 def interpolate_tensor_iter(self):
     def _interpolate_tensor_iter():
+        res = []
         for t in self.inputs:
-            torch.nn.functional.interpolate(t, t.unsqueeze(0).shape[-2])
+            r = torch.nn.functional.interpolate(t, t.unsqueeze(0).shape[-2])
+            res.append(r)
 
+        return res
     return _interpolate_tensor_iter
 
 @register_benchmark
@@ -337,15 +355,15 @@ class SegLayersBenchMark(object):
                 "dropout_tensor_iter",
                 "dropout_tensor_pad",
                 "dropout_nt",
-                "interpolate_tensor_iter",
                 "interpolate_tensor_pad",
+                "interpolate_tensor_iter",
                 "interpolate_nt",
             ]
 
             benchmarks = [(layer, self.get_benchmark(c, layer, cuda)) for layer in self.args.layers]
             
             for layer, benchmark in benchmarks:
-                result = utils.benchmark_fn(benchmark, run_time=self.args.run_time, warmup=self.args.warmup, cuda=cuda)
+                result = utils.benchmark_fn(benchmark, cuda=cuda, run_time=self.args.run_time, warmup=self.args.warmup)
                 result["#"] = str(i) + "/" + str(len(benchmarks) * len(params))
                 result["N"] = n
                 result["C"] = c
